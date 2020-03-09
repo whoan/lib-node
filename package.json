@@ -1,0 +1,12 @@
+{
+  "name": "lib-node",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "git@github.com:whoan/lib-node.git",
+  "author": "Juan Eugenio Abadie <juaneabadie@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "ioredis": "^4.16.0"
+  }
+}
