@@ -1,7 +1,7 @@
 var Redis = require('ioredis')
 
 class Psubscriber {
-  constructor (channelPrefix, msgHandler, host='redis') {
+  constructor (channelPrefix, msgHandler, host = 'redis') {
     if (!channelPrefix) {
       throw new Error('I need at least a channel to work')
     }

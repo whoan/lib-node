@@ -1,7 +1,7 @@
 var Redis = require('ioredis')
 
 class Subscriber {
-  constructor (channels, msgHandler, host='redis') {
+  constructor (channels, msgHandler, host = 'redis') {
     if (!channels) {
       throw new Error('I need at least a channel to work')
     }
@@ -22,9 +22,9 @@ class Subscriber {
     })
     this.subscriber.subscribe(...channels, function (error, count) {
       if (error) {
-        throw new Error(`Failed at subscribing to ${count} channels: ` + channels.join(" "))
+        throw new Error(`Failed at subscribing to ${count} channels: ` + channels.join(' '))
       }
-      console.log(`Subscribed to ${count} channels: ` + channels.join(" "))
+      console.log(`Subscribed to ${count} channels: ` + channels.join(' '))
     })
   }
 }

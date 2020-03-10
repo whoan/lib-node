@@ -51,7 +51,7 @@ function Children (errorHandler) {
     }
   }
 
-  function forEach(handler) {
+  function forEach (handler) {
     Object.keys(children).forEach(handler)
   }
 
