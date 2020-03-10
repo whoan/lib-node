@@ -9,6 +9,10 @@ class Subscriber {
       throw new Error('I need a message handler')
     }
 
+    if (!Array.isArray(channels)) {
+      channels = [channels]
+    }
+
     this.subscriber = new Redis({
       host: host,
       retryStrategy: function (times) {
@@ -17,9 +21,7 @@ class Subscriber {
       }
     })
 
-    this.subscriber.on('message', function () {
-      msgHandler(...arguments)
-    })
+    this.subscriber.on('message', msgHandler)
     this.subscriber.subscribe(...channels, function (error, count) {
       if (error) {
         throw new Error(`Failed at subscribing to ${count} channels: ` + channels.join(' '))
