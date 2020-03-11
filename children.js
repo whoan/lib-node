@@ -31,14 +31,24 @@ function Children (errorHandler) {
       console.error(lines.join(''))
     })
 
-    newChild.on('exit', handleDeleteChild.bind(null, id))
-
     newChild.on('close', function (code) {
       console.log('child process closed all stdio with code ' + code)
     })
 
-    newChild.on('error', function (error) {
-      console.error('process error ' + error)
+    return new Promise((resolve, reject) => {
+      newChild.on('error', function (error) {
+        console.error('error at creating process ' + error)
+        if (reject) {
+          reject('Something went wrong')
+        }
+        delete children[id]
+      })
+      newChild.on('exit', handleDeleteChild.bind(null, id, reject))
+      setTimeout(() => {
+        if (children[id]) {
+          resolve()
+        }
+      }, 300) // why 300 (seems rasonable)
     })
   }
 
@@ -59,7 +69,10 @@ function Children (errorHandler) {
     return !!children[id]
   }
 
-  function handleDeleteChild (id, code, signal) {
+  function handleDeleteChild (id, reject, code, signal) {
+    if (reject) {
+      reject('Something went wrong')
+    }
     console.log(`child process exited with code ${code} and signal ${signal}`)
     if (code && errorHandler) {
       errorHandler(code)
