@@ -1,9 +1,9 @@
 var Redis = require('ioredis')
 
 class Psubscriber {
-  constructor (channelPrefix, msgHandler, host = 'redis') {
-    if (!channelPrefix) {
-      throw new Error('I need at least a channel to work')
+  constructor (channelPattern, msgHandler, host = 'redis') {
+    if (!channelPattern) {
+      throw new Error('I need channel pattern to work')
     }
     if (!msgHandler) {
       throw new Error('I need a message handler')
@@ -20,10 +20,11 @@ class Psubscriber {
     this.subscriber.on('pmessage', function (pattern, channel, info) {
       msgHandler(channel, info)
     })
-    this.subscriber.psubscribe(channelPrefix, function (error) {
+    this.subscriber.psubscribe(channelPattern, function (error) {
       if (error) {
-        throw new Error('Failed at psubscribing to channel: ' + channelPrefix)
+        throw new Error('Failed at psubscribing to pattern: ' + channelPattern)
       }
+      console.log(`Subscribed to pattern: ${channelPattern}`)
     })
   }
 }
