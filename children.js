@@ -38,7 +38,7 @@ function Children () {
     return new Promise((resolve, reject) => {
       newChild.on('error', function (error) {
         if (reject) {
-          reject('Something went wrong')
+          reject(new Error('Something went wrong'))
         }
         console.error('error at creating process ' + error)
         delete children[id]
