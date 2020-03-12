@@ -1,6 +1,6 @@
 var childProcess = require('child_process')
 
-function Children (errorHandler) {
+function Children () {
   this.create = createChild
   this.delete = deleteChild
   this.exist = exist
@@ -37,10 +37,10 @@ function Children (errorHandler) {
 
     return new Promise((resolve, reject) => {
       newChild.on('error', function (error) {
-        console.error('error at creating process ' + error)
         if (reject) {
           reject('Something went wrong')
         }
+        console.error('error at creating process ' + error)
         delete children[id]
       })
       newChild.on('exit', handleDeleteChild.bind(null, id, reject))
@@ -48,7 +48,7 @@ function Children (errorHandler) {
         if (children[id]) {
           resolve()
         }
-      }, 300) // why 300 (seems rasonable)
+      }, 300) // why 300 (seems reasonable)
     })
   }
 
@@ -73,10 +73,7 @@ function Children (errorHandler) {
     if (reject) {
       reject('Something went wrong')
     }
-    console.log(`child process exited with code ${code} and signal ${signal}`)
-    if (code && errorHandler) {
-      errorHandler(code)
-    }
+    (code ? console.error : console.log)(`child process exited with code ${code} and signal ${signal}`)
     delete children[id]
   }
 }
