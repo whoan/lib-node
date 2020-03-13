@@ -40,7 +40,7 @@ class Children {
         console.error('error at creating process ' + error)
         delete this.children[id]
       })
-      newChild.on('exit', this.handleExitChild.bind(null, id, reject))
+      newChild.on('exit', this._handleExitChild.bind(this, id, reject))
       setTimeout(() => {
         if (this.children[id]) {
           resolve()
@@ -66,7 +66,7 @@ class Children {
     return !!this.children[id]
   }
 
-  handleExitChild (id, reject, code, signal) {
+  _handleExitChild (id, reject, code, signal) {
     if (reject) {
       reject('Something went wrong')
     }
