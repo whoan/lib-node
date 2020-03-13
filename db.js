@@ -22,6 +22,18 @@ class Db {
     return this.redis.set(key, value)
   }
 
+  update (key, status) {
+    return this.get(key).then(result => {
+      if (!result) {
+        throw new Error('Register not found or another error: ' + key)
+      }
+      return this.save(key, {
+        ...JSON.parse(result),
+        ...status
+      })
+    })
+  }
+
   get (key) {
     return this.redis.get(key)
   }
