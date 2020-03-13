@@ -1,8 +1,9 @@
 var childProcess = require('child_process')
 
 class Children {
-  constructor () {
+  constructor (userExitHandler) {
     this.children = {}
+    this.userExitHandler = userExitHandler
   }
 
   create (id, command, params) {
@@ -72,6 +73,9 @@ class Children {
     }
     (code ? console.error : console.log)(`child process exited with code ${code} and signal ${signal}`)
     delete this.children[id]
+    if (this.userExitHandler) {
+      this.userExitHandler(id, code)
+    }
   }
 }
 
