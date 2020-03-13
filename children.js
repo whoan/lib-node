@@ -1,20 +1,17 @@
 var childProcess = require('child_process')
 
-function Children () {
-  this.create = createChild
-  this.delete = deleteChild
-  this.exist = exist
-  this.forEach = forEach
+class Children {
+  constructor () {
+    this.children = {}
+  }
 
-  const children = {}
-
-  function createChild (id, command, params) {
-    children[id] = childProcess.spawn(
+  create (id, command, params) {
+    this.children[id] = childProcess.spawn(
       command,
       params,
       { detached: true }
     )
-    var newChild = children[id]
+    var newChild = this.children[id]
 
     // noinspection JSUnresolvedFunction
     newChild.stdout.setEncoding('utf8')
@@ -41,40 +38,40 @@ function Children () {
           reject(new Error('Something went wrong'))
         }
         console.error('error at creating process ' + error)
-        delete children[id]
+        delete this.children[id]
       })
-      newChild.on('exit', handleDeleteChild.bind(null, id, reject))
+      newChild.on('exit', this.handleExitChild.bind(null, id, reject))
       setTimeout(() => {
-        if (children[id]) {
+        if (this.children[id]) {
           resolve()
         }
       }, 300) // why 300 (seems reasonable)
     })
   }
 
-  function deleteChild (id) {
-    if (id in children) {
-      process.kill(-children[id].pid)
-      delete children[id]
+  delete (id) {
+    if (id in this.children) {
+      process.kill(-this.children[id].pid)
+      delete this.children[id]
     } else {
       console.log('Unknown child')
     }
   }
 
-  function forEach (handler) {
-    Object.keys(children).forEach(handler)
+  forEach (handler) {
+    Object.keys(this.children).forEach(handler)
   }
 
-  function exist (id) {
-    return !!children[id]
+  exist (id) {
+    return !!this.children[id]
   }
 
-  function handleDeleteChild (id, reject, code, signal) {
+  handleExitChild (id, reject, code, signal) {
     if (reject) {
       reject('Something went wrong')
     }
     (code ? console.error : console.log)(`child process exited with code ${code} and signal ${signal}`)
-    delete children[id]
+    delete this.children[id]
   }
 }
 
