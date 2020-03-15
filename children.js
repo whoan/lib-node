@@ -34,12 +34,12 @@ class Children {
     })
 
     return new Promise((resolve, reject) => {
-      newChild.on('error', function (error) {
+      newChild.on('error', error => {
+        console.error('error at creating process ' + error)
+        delete this.children[id]
         if (reject) {
           reject(new Error('Something went wrong'))
         }
-        console.error('error at creating process ' + error)
-        delete this.children[id]
       })
       newChild.on('exit', this._handleExitChild.bind(this, id, reject))
       setTimeout(() => {
@@ -52,7 +52,7 @@ class Children {
 
   delete (id) {
     if (id in this.children) {
-      process.kill(-this.children[id].pid)
+      this.children[id].pid && process.kill(-this.children[id].pid)
       delete this.children[id]
     } else {
       console.log('Unknown child')
